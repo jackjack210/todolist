@@ -1,19 +1,20 @@
 
+const dotenv = require('dotenv'); 
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+const app = express();
 
-var app = express();
-
-
+dotenv.config({path:'./config.env'});
 
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://admin-uddesh:P0o9i8u7y6y5@cluster0.6noej.mongodb.net/todolistDB",{useNewUrlParser: true, useUnifiedTopology: true} );
+const db = process.env.database;
+mongoose.connect(db,{useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true} );
 
 const itemsSchema = ({
     name: String
@@ -102,6 +103,11 @@ app.post("/delete", function (req, res) {
     });
 });
 
-app.listen(3000, function () {
-  console.log('This app listening on port 3000!');
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+
+app.listen(port, function () {
+  console.log('SERVER IS RUNNING');
 });
